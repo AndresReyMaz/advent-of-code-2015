@@ -1,0 +1,33 @@
+(defun perimeter (s1 s2)
+  (+ (* 2 s1) (* 2 s2)))
+
+(defun ribbon-present (l w h)
+  (min (perimeter l w) (perimeter l h) (perimeter w h)))
+
+(defun part2 (lst)
+  (reduce #'+ (map 'list #'(lambda (x)
+                             (let ((l (first x))
+                                   (w (second x))
+                                   (h (third x)))
+                               (+ (ribbon-present l w h)
+                                  (* l w h))))
+                   lst)))
+
+(defun part1 (lst)
+  (reduce #'+ (map 'list #'(lambda (x)
+                             (let ((l (first x))
+                                   (w (second x))
+                                   (h (third x)))
+                               (+ (* 2 l w) (* 2 w h) (* 2 h l)
+                                  (min (* l w) (* w h) (* h l)))))
+                   lst)))
+
+(defun read-to-list (n in)
+  (if (> n 0) (cons (list (read in) (read in) (read in)) (read-to-list (decf n) in)) ()))
+
+(defun main ()
+  (let ((in (open "./1.txt")))
+    (let ((lst (read-to-list 1000 in)))
+      (print (part1 lst))
+      (print (part2 lst)))
+    (close in)))
