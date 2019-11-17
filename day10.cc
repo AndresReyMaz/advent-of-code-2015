@@ -1,22 +1,22 @@
+// Copyright 2019 Andrés Reynoso-Mazoy
 #include <iostream>
 #include <vector>
-using namespace std;
 
-vector<char> readInput() {
-  string x;
-  cin >> x;
-  vector<char> ans(x.begin(), x.end());
+std::vector<char> readInput() {
+  std::string x;
+  std::cin >> x;
+  std::vector<char> ans(x.begin(), x.end());
   return ans;
 }
 
-void printSeq(const vector<char>& seq) {
+void printSeq(const std::vector<char>& seq) {
   for (auto x : seq)
-    cout << x;
-  cout << endl;
+    std::cout << x;
+  std::cout << std::endl;
 }
 
-vector<char> generate(const vector<char>& seq) {
-  vector<char> ans;
+std::vector<char> generate(const std::vector<char>& seq) {
+  std::vector<char> ans;
   for (int i = 0; i < seq.size(); ++i) {
     int cnt = 1;
     while (i < seq.size() - 1 && seq[i] == seq[i+1]) {
@@ -29,7 +29,7 @@ vector<char> generate(const vector<char>& seq) {
   return ans;
 }
 
-int getSizeAfterNGenerations(vector<char> seq, int N) {
+int getSizeAfterNGenerations(std::vector<char> seq, int N) {
   for (int i = 0; i < N; ++i) {
     seq = generate(seq);
   }
@@ -38,6 +38,6 @@ int getSizeAfterNGenerations(vector<char> seq, int N) {
 
 int main() {
   auto x = readInput();
-  cout << "Part 1: " << getSizeAfterNGenerations(x, 40) << endl;
-  cout << "Part 2: " << getSizeAfterNGenerations(x, 50) << endl;
+  std::cout << "Part 1: " << getSizeAfterNGenerations(x, 40) << std::endl;
+  std::cout << "Part 2: " << getSizeAfterNGenerations(x, 50) << std::endl;
 }

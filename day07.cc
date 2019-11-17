@@ -1,5 +1,4 @@
-// unsigned shorts, all in hashtable
-// you can replace them 
+// Copyright 2019 Andrés Reynoso-Mazoy
 #include <iostream>
 #include <string>
 #include <vector>
@@ -15,23 +14,23 @@
 
 
 struct node {
-  // The value that the numbers have
-  unsigned short value;
-  // The operation number (ID means just take the value)
+  // The value that the numbers have.
+  uint64_t value;
+  // The operation number (ID means just take the value).
   int operation;
-  // The left and right side of the op
+  // The left and right side of the op.
   std::string left, right;
 };
 
-unsigned short resolve(std::string target, std::map<std::string, node>& hashtable);
+uint64_t resolve(std::string target, std::map<std::string, node> *hashtable);
 
-std::vector<std::string> split (const std::string &s, char delim) {
+std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> result;
-    std::stringstream ss (s);
+    std::stringstream ss(s);
     std::string item;
 
-    while (getline (ss, item, delim)) {
-        result.push_back (item);
+    while (getline(ss, item, delim)) {
+        result.push_back(item);
     }
 
     return result;
@@ -80,7 +79,8 @@ std::map<std::string, node> process_info() {
   return hashtable;
 }
 
-inline unsigned short resolveOrDigit(std::string wire, std::map<std::string, node>& hashtable) {
+inline uint64_t resolveOrDigit(std::string wire,
+                               std::map<std::string, node> *hashtable) {
   if (wire.length() == 0) {
     return 0;
   }
@@ -92,17 +92,17 @@ inline unsigned short resolveOrDigit(std::string wire, std::map<std::string, nod
 }
 
 // resolve gets the value of the target, figuring out any rules if necessary.
-unsigned short resolve(std::string target, std::map<std::string, node>& hashtable) {
-  if (hashtable.find(target) == hashtable.end()) {
+uint64_t resolve(std::string target, std::map<std::string, node> *hashtable) {
+  if (hashtable->find(target) == hashtable->end()) {
     std::cout << "Error: wire " << target << " not found." << std::endl;
     exit(1);
   }
-  node curNode = hashtable[target];
+  node curNode = (*hashtable)[target];
   if (curNode.operation == ID) {
     return curNode.value;
   }
-  unsigned short left = resolveOrDigit(curNode.left, hashtable);
-  unsigned short right = resolveOrDigit(curNode.right, hashtable);
+  uint64_t left = resolveOrDigit(curNode.left, hashtable);
+  uint64_t right = resolveOrDigit(curNode.right, hashtable);
   switch (curNode.operation) {
     case AND:
       curNode.value = left & right;
@@ -111,7 +111,7 @@ unsigned short resolve(std::string target, std::map<std::string, node>& hashtabl
       curNode.value = left | right;
       break;
     case NOT:
-      curNode.value = ~ left;
+      curNode.value = ~left;
       break;
     case LSHIFT:
       curNode.value = left << right;
@@ -125,20 +125,20 @@ unsigned short resolve(std::string target, std::map<std::string, node>& hashtabl
   }
   curNode.operation = ID;
   // Write back the curNode to the hashtable and return
-  hashtable[target] = curNode;
+  (*hashtable)[target] = curNode;
   return curNode.value;
 }
 
-unsigned short part1() {
+uint64_t part1() {
   std::map<std::string, node> hashtable = process_info();
-  return resolve("a", hashtable);
+  return resolve("a", &hashtable);
 }
 
-unsigned short part2() {
+uint64_t part2() {
   std::map<std::string, node> hashtable = process_info();
   hashtable["b"].operation = ID;
   hashtable["b"].value = 46065;
-  return resolve("a", hashtable);
+  return resolve("a", &hashtable);
 }
 
 int main() {
